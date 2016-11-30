@@ -4,11 +4,10 @@ MAINTAINER Elvin Tan <elvin@elvin.net>
 
 ADD v2.0.23.zip /tmp/
 
-RUN yum -y install  make openssl openssl-devel gnutls-devel gnutls gcc
-gcc-c++ perl
+RUN yum -y install  make openssl openssl-devel gnutls-devel gnutls gcc gcc-c++ perl
 RUN  useradd -u 10000 -d /opt/inspircd/ inspircd && \
     cd /tmp && \
-    tar -xzf *.tar.gz && \
+    unzip v2.0.23.zip && \
     ln -sf inspircd-* inspircd && \
     cd /tmp/inspircd && \
     ./configure --disable-interactive --prefix=/opt/inspircd/ --uid 10000
