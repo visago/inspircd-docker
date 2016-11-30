@@ -1,0 +1,2 @@
+# inspircd-docker
+Dockered inspircd
