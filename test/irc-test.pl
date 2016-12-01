@@ -21,8 +21,8 @@ $SIG{TERM} = sub { die "Caught a sigterm $!" };
 undef $core::config->{config}->{LogFolder};
 undef $core::config->{config}->{DebugLogFolder};
 #$core::config->{config}->{debug}=6; #needed to log debug>7
-$Global::DebugLevel=9;
-$core::config->{config}->{debug}=9;
+$Global::DebugLevel=4;
+#$core::config->{config}->{debug}=9;
 
 ########################### EDIT NOTHING BELOW ###################################
 my $version="0.1";
@@ -34,10 +34,10 @@ my $tcpd=new MyTCP(jitterwarning=>300,maxconnections=>128,handler=>{"irc"=>{conn
 
 my $irc;
 $irc->{user}=$ENV{'HOSTNAME'} || "botcc";
-$irc->{nick}=$ENV{'DIMSUM_USER'} || "test$$";
+$irc->{nick}=$ENV{'NICK'} || "test$$";
 $irc->{desc}=sprintf("HOSTNAME: %s",$ENV{'HOSTNAME'} || "XXXXXXXXXX");
-$irc->{ircserver}=$ENV{'DIMSUM_SERVERIP'} || "127.0.0.1";
-$irc->{ircport}=$ENV{'DIMSUM_SERVERPORT'} || "6667";
+$irc->{ircserver}=$ENV{'SERVERIP'} || "127.0.0.1";
+$irc->{ircport}=$ENV{'SERVERPORT'} || "6667";
 $irc->{starttime}=time();
 $irc->{timeout}=0;
 $irc->{command}=0;
@@ -52,6 +52,9 @@ $cron->{ping}->{timer}=60;
 my $queue;
 $queue->{start}->{nexttime}=time();
 $queue->{start}->{func}=\&irc_start;
+
+my $tests;
+
   
 my $running=1;
 while ($running) { 
@@ -74,13 +77,12 @@ exit 0;
 sub irc_start {
   $tcpd->connect($irc->{ircserver},$irc->{ircport},"irc");
 }
+
 sub cron_ping {
   if ($irc->{fd}) {
      $tcpd->send($irc->{fd},sprintf("PING :%s.%s [%s]",gettimeofday,dts()));
-#     debug(spritf("We got %0d users in %s".scalar keys %{$irc->{channel}->{$irc->{clusterchannel}}},$irc->{clusterchannel}),4);
   }	
 }
-
 
 sub dcmi_msg {
   my $msg=shift;
@@ -137,9 +139,8 @@ sub processline_irc { # Main line processor. Called with file descriptor and lin
     my $welcome=$3;
     $irc->{fd}=$fd;
     $irc->{nick}=$mynick;
-    $tcpd->send($fd,"JOIN #all");
     $tcpd->send($fd,"JOIN #dcmi");
-    $tcpd->send($fd,"JOIN #".$irc->{cluster});
+    $tcpd->send($fd,"JOIN #test");
     cron_ping(); #Just to trigger start
   } elsif ($line=~ /:(.+?) 353 (.+?) \= (.+?) :(.+)/i) {
     my $server=$1;
@@ -147,6 +148,11 @@ sub processline_irc { # Main line processor. Called with file descriptor and lin
     my $chan=$3;
     my $users=$4;
     debug("[User List $chan] $users",4);
+    if ($chan eq "#test") {
+      $tcpd->send($fd,sprintf("PRIVMSG #test %s","x"x50));  
+      $tcpd->send($fd,sprintf("PRIVMSG %s %s",$irc->{nick},"X"x50));  
+    }
+
   } elsif ($line=~ /:(.+?) PART :(.+)/i) {
     my $user=$1;
     my $chan=$2;
@@ -181,10 +187,12 @@ sub processline_irc { # Main line processor. Called with file descriptor and lin
     if ($target =~ /^#/i) {
       $reply=$target;
     }
-    if ($target eq "#".$irc->{cluster}) {
-      debug(sprintf("[%5d] LOG/CLIENT $nick - %s",$fd,$msg),4);
-    } elsif ($target eq $irc->{nick}) { #msg to me ! 
-      debug(sprintf("[%5d] IRC: %s PRIVMSG to %s - %s",$fd,$from,$target,$msg),6);
+
+    if ($target eq $irc->{nick}) { #msg to me ! 
+      my $l=length($msg);
+      debug(sprintf("[%5d] IRC: %s PRIVMSG to ME [%0d bytes] - %s",$fd,$from,$l,$msg),6);
+      debug(sprintf("[TEST] Tested %0d msg",$l),4);
+      $tcpd->send($fd,sprintf("PRIVMSG %s %s",$irc->{nick},"X"x($l+500)));  
     } else {
      debug(sprintf("[%5d] IRC: %s PRIVMSG to %s - %s",$fd,$from,$target,$msg),6);
     }
