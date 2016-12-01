@@ -1,0 +1,130 @@
+## ulimit -n 32766
+
+<config format="xml">
+<server name="irc.mrcow.net" description="Moo Moo Net" network="MooMooNet">
+<admin name="Bovine Overlord" nick="moomoocow" email="mrcow@mrcow.net">
+<bind address="" port="6667" type="clients">
+<bind address="" port="7000" type="servers">
+<power diepass="diePassword" restartpass="restartPassword">
+
+<connect deny="69.254.*">
+<connect deny="3ffe::0/32" reason="The 6bone address space is deprecated">
+<connect name="main" allow="*" timeout="30" pingfreq="240" hardsendq="1048576" softsendq="32768" recvq="32766" threshold="300" commandrate="1000" fakelag="on" localmax="16384" globalmax="16384" useident="no" limit="32766" modes="+x">
+<cidr ipv4clone="32" ipv6clone="128">
+<class name="Shutdown" commands="DIE RESTART REHASH LOADMODULE UNLOADMODULE RELOAD GUNLOADMODULE GRELOADMODULE SAJOIN SAPART SANICK SAQUIT SATOPIC" privs="users/auspex channels/auspex servers/auspex users/mass-message channels/high-join-limit channels/set-permanent users/flood/no-throttle users/flood/increased-buffers" usermodes="*" chanmodes="*">
+<class name="ServerLink" commands="CONNECT SQUIT CONNECT MKPASSWD ALLTIME SWHOIS CLOSE JUMPSERVER LOCKSERV" usermodes="*" chanmodes="*" privs="servers/auspex">
+<class name="BanControl" commands="KILL GLINE KLINE ZLINE QLINE ELINE TLINE RLINE CHECK NICKLOCK SHUN CLONES CBAN" usermodes="*" chanmodes="*">
+<class name="OperChat" commands="WALLOPS GLOBOPS SETIDLE" usermodes="*" chanmodes="*" privs="users/mass-message">
+<class name="HostCloak" commands="SETHOST SETIDENT SETNAME CHGHOST CHGIDENT TAXONOMY" usermodes="*" chanmodes="*" privs="users/auspex">
+<type name="NetAdmin" classes="OperChat BanControl HostCloak Shutdown ServerLink" vhost="netadmin.omega.org.za" modes="+s +cCqQ">
+<type name="GlobalOp" classes="OperChat BanControl HostCloak ServerLink" vhost="ircop.omega.org.za">
+<type name="Helper" classes="HostCloak" vhost="helper.omega.org.za">
+
+<oper name="mrcow" password="operup"  host="*@*.*"  vhost="oper.mrcow.net" type="NetAdmin" override="*">
+
+<channels users="30" opers="60">
+<dns server="8.8.8.8" timeout="5">
+<pid file="/tmp/inspircd.pid">
+<banlist chan="*" limit="128">
+<options prefixquit="Quit: " suffixquit="" prefixpart="&quot;" suffixpart="&quot;" syntaxhints="no" cyclehosts="yes" cyclehostsfromuser="no" ircumsgprefix="no" announcets="yes" allowmismatched="no" defaultbind="auto" hostintopic="yes" pingwarning="15" serverpingfreq="60" defaultmodes="nt" moronbanner="You're banned! Email haha@abuse.com with the ERROR line below for help." exemptchanops="nonick:v flood:o" invitebypassmodes="yes">
+<performance
+     netbuffersize="40960"
+     maxwho="512"
+     somaxconn="256"
+     softlimit="32000"
+     quietbursts="yes"
+     nouserdns="yes">
+
+<security  announceinvites="dynamic"  hidemodes="eI"  hideulines="no"  flatlinks="no"  hidewhois=""  hidebans="no"  hidekills=""  hidesplits="no"  maxtargets="20"  customversion=""  operspywhois="no"  restrictbannedusers="yes"  genericoper="no"  userstats="Pu">
+<limits maxnick="31" maxchan="64" maxmodes="20" maxident="16" maxquit="255" maxtopic="307" maxkick="255" maxgecos="128" maxaway="200">
+
+<log method="file" type="* -USERINPUT -USEROUTPUT" level="default" target="/opt/inspircd/conf/ircd.log">
+#<log method="file" type="*" level="default" target="/opt/inspircd/conf/ircd-all.log">
+<whowas groupsize="10" maxgroups="100000" maxkeep="3d">
+<badip ipmask="69.69.69.69" reason="No porn here thanks.">
+
+<badnick nick="ChanServ" reason="Reserved For Services">
+<badnick nick="NickServ" reason="Reserved For Services">
+<badnick nick="OperServ" reason="Reserved For Services">
+<badnick nick="MemoServ" reason="Reserved For Services">
+
+<badhost host="*@hundredz.n.hundredz.o.1337.kiddies.com" reason="Too many 1337 kiddiots">
+<badhost host="root@*" reason="Don't irc as root!">
+<badhost host="*@172.32.0.0/16" reason="This subnet is bad.">
+
+<insane hostmasks="no" ipmasks="no" nickmasks="no" trigger="50.0">
+
+<module name="m_password_hash.so">
+<module name="m_md5.so">
+<module name="m_sha256.so">
+<module name="m_ripemd160.so">
+<module name="m_auditorium.so">
+<auditorium opvisible="yes" opcansee="no" opercansee="yes">
+
+<module name="m_check.so">
+
+<module name="m_conn_join.so">
+<autojoin channel="#moo">
+
+<module name="m_devoice.so">
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# HIDECHANS module: Allows opers to hide their channels list from non-
+# opers by setting user mode +I on themselves.
+# <module name="m_hidechans.so">
+#
+# HIDECHANS can optionally prevent opers from seeing channels on a +I
+# user, for more privacy if set to true.
+# This setting is not recommended for most mainstream networks.
+#<hidechans affectsopers="false">
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# HIDEOPER module: Allows opers to hide their oper status from non-
+# opers by setting user mode +H on themselves.
+# This module is oper-only.
+# <module name="m_hideoper.so">
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# httpd module: Provides http server support for InspIRCd
+<module name="m_httpd.so">
+#
+#-#-#-#-#-#-#-#-#-#-#-#-  HTTPD   CONFIGURATION  -#-#-#-#-#-#-#-#-#-#-#
+#
+# If you choose to use the m_httpd.so module, then you will need to add
+# a <bind> tag with type "httpd", and load at least one of the other
+# m_httpd_* modules to provide pages to display.
+#
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# http ACL module: Provides access control lists for m_httpd dependent
+# modules. Use this module to restrict pages by IP address and by
+# password.
+#
+#<module name="m_httpd_acl.so">
+#
+#-#-#-#-#-#-#-#-#-#-#-#- HTTPD ACL CONFIGURATION -#-#-#-#-#-#-#-#-#-#-#
+#
+# Restrict access to the m_httpd_stats module to all but the local
+# network and when the correct password is specified:
+#
+# <httpdacl path="/stats*" types="password,whitelist"
+#    username="secretstuff" password="mypasshere" whitelist="127.0.0.*,10.*">
+# 
+# Deny all connections to all but the main index page:
+#
+# <httpdacl path="/*" types="blacklist" blacklist="*">
+#
+
+<ojoin prefix="!" notice="yes" op="yes">
+<module name="m_spanningtree.so">
+<module name="m_httpd_stats.so">
+<module name="m_ojoin.so">
+<module name="m_operlog.so">
+<module name="m_override.so">
+<override noisy="yes" requirekey="no">
+
+#<module name="m_httpd_config.so">
+#<module name="m_opermodes.so">
+#<module name="m_ssl_gnutls.so">
+#<module name="m_ssl_openssl.so">
+#<openssl dhfile="/etc/inspircd/dhparams.pem" cafile="/etc/inspircd/ca.pem" certfile="/etc/inspircd/cert.pem" keyfile="/etc/inspircd/key.pem">

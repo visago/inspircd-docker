@@ -5,6 +5,6 @@ if [ -f "/opt/inspircd/conf/inspircd.conf" ]; then
   echo "*** Using user-suppplied configuration"
 else
   echo "*** Copying a default configuration file"
-  cp -f /opt/inspircd/inspircd.conf.default /opt/inspircd/conf/inspircd.conf
+  cp -f /opt/inspircd/inspircd.conf.example /opt/inspircd/conf/inspircd.conf
 fi
 exec su - inspircd -c "/opt/inspircd/bin/inspircd --nofork"
