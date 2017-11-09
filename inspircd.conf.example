@@ -9,7 +9,7 @@
 
 <connect deny="69.254.*">
 <connect deny="3ffe::0/32" reason="The 6bone address space is deprecated">
-<connect name="main" allow="*" timeout="30" pingfreq="240" hardsendq="1048576" softsendq="32768" recvq="32766" threshold="300" commandrate="1000" fakelag="on" localmax="16384" globalmax="16384" useident="no" limit="32766" modes="+x">
+<connect name="main" allow="*" timeout="30" pingfreq="300" hardsendq="10485760" softsendq="327680" recvq="10485760"  threshold="300" commandrate="1000" fakelag="off" localmax="16384" globalmax="32768" useident="no" limit="327680" modes="+x">
 <cidr ipv4clone="32" ipv6clone="128">
 <class name="Shutdown" commands="DIE RESTART REHASH LOADMODULE UNLOADMODULE RELOAD GUNLOADMODULE GRELOADMODULE SAJOIN SAPART SANICK SAQUIT SATOPIC" privs="users/auspex channels/auspex servers/auspex users/mass-message channels/high-join-limit channels/set-permanent users/flood/no-throttle users/flood/increased-buffers" usermodes="*" chanmodes="*">
 <class name="ServerLink" commands="CONNECT SQUIT CONNECT MKPASSWD ALLTIME SWHOIS CLOSE JUMPSERVER LOCKSERV" usermodes="*" chanmodes="*" privs="servers/auspex">
@@ -30,8 +30,8 @@
 <performance
      netbuffersize="40960"
      maxwho="512"
-     somaxconn="256"
-     softlimit="32000"
+     somaxconn="512"
+     softlimit="64000"
      quietbursts="yes"
      nouserdns="yes">
 
